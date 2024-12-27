@@ -32,8 +32,8 @@ The **Link Extractor Tool** is a Python-based web scraping utility that extracts
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/Amirprx3/link-extractor-tool.git
-    cd link-extractor-tool
+    git clone https://github.com/Amirprx3/LinkeXtractor.git
+    cd LinkeXtractor
     ```
 
 2. Install dependencies:
@@ -47,7 +47,7 @@ The **Link Extractor Tool** is a Python-based web scraping utility that extracts
 
 1. Run the script:
     ```bash
-    python link_extractor.py
+    python LinkeXtractor.py
     ```
 
 2. Select a browser:
