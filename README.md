@@ -93,19 +93,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Author
 
 Developed by [Amirprx3](https://github.com/Amirprx3).
-
-## Contributing
-
-Contributions are welcome! Please fork this repository, make changes, and submit a pull request.
-
----
-
-### Markdown Benefits
-
-The README includes:
-- **Project description** to explain what it does.
-- **Features** to highlight capabilities.
-- **Requirements** for setting up the project.
-- **Usage instructions** with an example.
-- **Customization** tips to adapt the script for specific use cases.
-- **Contribution guidelines** for open-source collaboration.
