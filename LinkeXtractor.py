@@ -1,10 +1,11 @@
 import logging
 import requests
 import re
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, WebDriverException, StaleElementReferenceException # madeBy: #Amirprx3
 
 # logging settings
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -24,7 +25,7 @@ def initialize_driver(browser='firefox'):
             driver = webdriver.Firefox(options=options)
             return driver
         except Exception as e:
-            logger.error(f"Error initializing Firefox WebDriver: {e}") # made by: @Amirprx3
+            logger.error(f"Error initializing Firefox WebDriver: {e}")
             return None
     elif browser == 'chrome':
         options = webdriver.ChromeOptions()
@@ -46,14 +47,22 @@ def initialize_driver(browser='firefox'):
             driver = webdriver.Edge(options=options)
             return driver
         except Exception as e:
-            logger.error(f"Error initializing Edge WebDriver: {e}")
+            logger.error(f"Error initializing Edge WebDriver: {e}") # madeBy: #Amirprx3
             return None
     else:
         logger.error(f"Unsupported browser: {browser}")
         return None
 
-def Banner():
-    """
+def Banner(text):
+    # Display banner text with neon effect.
+    neon_colors = ["\033[1;30;40m", "\033[1;34;40m"]
+    for char in text:
+        print(neon_colors[0] + char, end="", flush=True)
+        neon_colors.append(neon_colors.pop(0))
+        time.sleep(0.001)
+    print('\033[0m')
+
+Banner("""
 ██╗     ██╗███╗   ██╗██╗  ██╗███████╗██╗  ██╗████████╗██████╗  █████╗  ██████╗████████╗ ██████╗ ██████╗ 
 ██║     ██║████╗  ██║██║ ██╔╝██╔════╝╚██╗██╔╝╚══██╔══╝██╔══██╗██╔══██╗██╔════╝╚══██╔══╝██╔═══██╗██╔══██╗
 ██║     ██║██╔██╗ ██║█████╔╝ █████╗   ╚███╔╝    ██║   ██████╔╝███████║██║        ██║   ██║   ██║██████╔╝
@@ -62,8 +71,7 @@ def Banner():
 ╚══════╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
 Github: https://github.com/Amirprx3
 made by: Amirprx3
-    """
-    print(Banner.__doc__)
+""")
 
 def fetch_script_content(src, retries=3):
     # Fetch script content from a URL with retries and caching.
@@ -101,7 +109,7 @@ def collect_links(driver, url):
 
         # Process the content of all scripts
         with ThreadPoolExecutor(max_workers=20) as executor:
-            futures = {executor.submit(fetch_script_content, s.get_attribute('src')): s for s in scripts if s.get_attribute('src')} # made by: @Amirprx3
+            futures = {executor.submit(fetch_script_content, s.get_attribute('src')): s for s in scripts if s.get_attribute('src')} # madeBy: #Amirprx3
             for future in as_completed(futures):
                 script_content = future.result()
                 if script_content:
@@ -134,14 +142,24 @@ def process_urls(driver, urls):
             filename = f"{domain}.txt"
             with open(filename, 'w', encoding='utf-8') as file:
                 file.write("\n".join(results))
-            logger.info(f"Results saved to {filename}")
+            logger.info(f"\033[1;32;40m[✓] Results saved to {filename}\033[0m")
         else:
-            logger.info(f"No links found for {url}")
+            logger.info(f"\033[1;31;40m[✕] No links found for {url}\033[0m")
+
+def quit_driver(driver, retries=3):
+    # Quit the WebDriver with retries.
+    for attempt in range(retries):
+        try:
+            driver.quit()
+            return
+        except Exception as e:
+            logger.error(f"Error quitting WebDriver: {e} (attempt {attempt + 1})")
+            if attempt == retries - 1:
+                logger.error("Failed to quit WebDriver after multiple attempts.")
 
 # main function
 if __name__ == "__main__":
-    Banner()
-    browser_choice = input("Enter the browser to use (firefox, chrome, edge): ").strip().lower()
+    browser_choice = input("[*]Enter the browser to use (firefox, chrome, edge): ").strip().lower()
     driver = initialize_driver(browser_choice)
     if not driver:
         logger.error("Failed to initialize WebDriver. Exiting.")
@@ -150,7 +168,7 @@ if __name__ == "__main__":
     urls = []
     try:
         while True:
-            url = input("Enter the website URL (or type 'exit' to quit): ")
+            url = input("[+]Enter the website URL (or type 'exit' to quit): ")
             if url.lower() == 'exit':
                 break
             urls.append(url)
@@ -159,9 +177,5 @@ if __name__ == "__main__":
         logger.info("\n[!] Exiting :(")
     finally:
         if driver:
-            try:
-                driver.quit()
-            except Exception as e:
-                logger.error(f"Error quitting WebDriver: {e}")
-
-# made by: @Amirprx3
+            quit_driver(driver)
+# madeBy: #Amirprx3
